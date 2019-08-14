@@ -1,4 +1,4 @@
-package gohtml
+package fmthtml
 
 import (
 	"golang.org/x/net/html"

@@ -1,2 +1,2 @@
-// Package gohtml provides an HTML formatting function.
-package gohtml
+// package fmthtml provides an HTML formatting function.
+package fmthtml
