@@ -8,7 +8,7 @@ import (
 func TestParse(t *testing.T) {
 	s := `<!DOCTYPE html><html><head><title>This is a title.</title></head><body><p>Line1<br>Line2</p><br/></body></html><!-- aaa --><a>`
 	htmlDoc := parse(strings.NewReader(s))
-	actual := htmlDoc.html()
+	actual := string(htmlDoc.bytes())
 	expected := `<!DOCTYPE html>
 <html>
   <head>
@@ -57,7 +57,7 @@ func TestHtmlEscape(t *testing.T) {
   </body>
 </html>`
 	htmlDoc := parse(strings.NewReader(s))
-	actual := htmlDoc.html()
+	actual := string(htmlDoc.bytes())
 	if actual != expected {
 		t.Errorf("Invalid result. [expected: %s][actual: %s]", expected, actual)
 	}

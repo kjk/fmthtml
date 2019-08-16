@@ -111,11 +111,6 @@ type htmlDocument struct {
 	elements []element
 }
 
-// html generates an HTML source code and returns it.
-func (htmlDoc *htmlDocument) html() string {
-	return string(htmlDoc.bytes())
-}
-
 // bytes reads from htmlDocument's internal array of elements and returns HTML source code
 func (htmlDoc *htmlDocument) bytes() []byte {
 	bf := &bytes.Buffer{}
@@ -132,12 +127,16 @@ func (htmlDoc *htmlDocument) append(e element) {
 
 // Format parses the input HTML string, formats it and returns the result.
 func Format(s string) string {
-	return parse(strings.NewReader(s)).html()
+	doc := parse(strings.NewReader(s))
+	res := string(doc.bytes())
+	return res
 }
 
 // FormatBytes parses input HTML as bytes, formats it and returns the result.
 func FormatBytes(b []byte) []byte {
-	return parse(bytes.NewReader(b)).bytes()
+	doc := parse(bytes.NewReader(b))
+	res := doc.bytes()
+	return res
 }
 
 // Format parses the input HTML string, formats it and returns the result with line no.

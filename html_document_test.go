@@ -9,7 +9,7 @@ func TestHTMLDocumentHTML(t *testing.T) {
 	s := `<!DOCTYPE html><html><head><title>This is a title.</title></head><body><p>Line1<br>Line2</p><br/></body></html><!-- aaa -->`
 	htmlDoc := parse(strings.NewReader(s))
 
-	actual := htmlDoc.html()
+	actual := string(htmlDoc.bytes())
 	expected := `<!DOCTYPE html>
 <html>
   <head>
@@ -48,7 +48,7 @@ func TestCondense(t *testing.T) {
 	}()
 	s := `<!DOCTYPE html><html><head><title>This is a title.</title></head><body><p>Line1<br>Line2</p><p>A Single Line</p><br/></body></html><!-- aaa -->`
 	htmlDoc := parse(strings.NewReader(s))
-	actual := htmlDoc.html()
+	actual := string(htmlDoc.bytes())
 	expected := `<!DOCTYPE html>
 <html>
   <head>
