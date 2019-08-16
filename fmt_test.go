@@ -69,6 +69,11 @@ func TestFiles(t *testing.T) {
 		require.NoError(t, err)
 		exp, err := ioutil.ReadFile(tc.AfterPath)
 		require.NoError(t, err)
+
+		Condense = false
+		if tc.n == 2 {
+			Condense = true
+		}
 		got := Format(before)
 		require.Equal(t, string(exp), string(got))
 	}
