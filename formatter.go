@@ -120,7 +120,7 @@ type htmlDocument struct {
 }
 
 // bytes reads from htmlDocument's internal array of elements and returns HTML source code
-func (htmlDoc *htmlDocument) bytes() []byte {
+func (htmlDoc *htmlDocument) toHTML() []byte {
 	bf := &bytes.Buffer{}
 	for _, e := range htmlDoc.elements {
 		e.write(bf, startIndent)
@@ -136,7 +136,7 @@ func (htmlDoc *htmlDocument) append(e element) {
 // Format pretty-prints HTML
 func Format(s []byte) []byte {
 	doc := parse(bytes.NewReader(s))
-	res := doc.bytes()
+	res := doc.toHTML()
 	return res
 }
 
