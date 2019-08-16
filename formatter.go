@@ -3,7 +3,6 @@ package fmthtml
 import (
 	"bytes"
 	"io"
-	"strconv"
 	"strings"
 )
 
@@ -30,7 +29,10 @@ func (wr *Writer) SetLastElement(lastElement string) *Writer {
 func (wr *Writer) Write(p []byte) (n int, err error) {
 	wr.bf.Write(p)
 	if bytes.HasSuffix(p, []byte(wr.lastElement)) {
-		return wr.writer.Write([]byte(Format(wr.bf.String()) + "\n"))
+		d := wr.bf.Bytes()
+		d = Format(d)
+		d = append(d, '\n')
+		return wr.writer.Write(d)
 	}
 	return 0, nil
 }
@@ -47,8 +49,14 @@ type textElement struct {
 
 // write writes a text to the buffer.
 func (e *textElement) write(bf *bytes.Buffer, indent int) {
-	lines := strings.Split(strings.Trim(unifyLineFeed(e.text), "\n"), "\n")
+	s := unifyLineFeed(e.text)
+	s = strings.Trim(s, "\n")
+	lines := strings.Split(s, "\n")
 	for _, line := range lines {
+		line = strings.TrimLeft(line, " ")
+		if line == "" {
+			continue
+		}
 		writeLineFeed(bf)
 		writeIndent(bf, indent)
 		bf.WriteString(line)
@@ -125,38 +133,11 @@ func (htmlDoc *htmlDocument) append(e element) {
 	htmlDoc.elements = append(htmlDoc.elements, e)
 }
 
-// Format parses the input HTML string, formats it and returns the result.
-func Format(s string) string {
-	doc := parse(strings.NewReader(s))
-	res := string(doc.bytes())
-	return res
-}
-
-// FormatBytes parses input HTML as bytes, formats it and returns the result.
-func FormatBytes(b []byte) []byte {
-	doc := parse(bytes.NewReader(b))
+// Format pretty-prints HTML
+func Format(s []byte) []byte {
+	doc := parse(bytes.NewReader(s))
 	res := doc.bytes()
 	return res
-}
-
-// Format parses the input HTML string, formats it and returns the result with line no.
-func FormatWithLineNo(s string) string {
-	return AddLineNo(Format(s))
-}
-
-func AddLineNo(s string) string {
-	lines := strings.Split(s, "\n")
-	maxLineNoStrLen := len(strconv.Itoa(len(lines)))
-	bf := &bytes.Buffer{}
-	for i, line := range lines {
-		lineNoStr := strconv.Itoa(i + 1)
-		if i > 0 {
-			bf.WriteString("\n")
-		}
-		bf.WriteString(strings.Repeat(" ", maxLineNoStrLen-len(lineNoStr)) + lineNoStr + "  " + line)
-	}
-	return bf.String()
-
 }
 
 // writeLine writes an HTML line to the buffer.

@@ -69,12 +69,7 @@ func TestFiles(t *testing.T) {
 		require.NoError(t, err)
 		exp, err := ioutil.ReadFile(tc.AfterPath)
 		require.NoError(t, err)
-		if tc.n == 1 {
-			// known bad
-			Format(string(before))
-			continue
-		}
-		got := Format(string(before))
-		require.Equal(t, string(exp), got)
+		got := Format(before)
+		require.Equal(t, string(exp), string(got))
 	}
 }
